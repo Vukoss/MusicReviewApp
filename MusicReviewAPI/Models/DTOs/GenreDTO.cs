@@ -1,6 +1,6 @@
 namespace MusicReviewAPI.Models.DTOs;
 
-public class GenreDTO
+public record GenreDTO
 {
     public int Id { get; set; }
     public string GenreName { get; set; }

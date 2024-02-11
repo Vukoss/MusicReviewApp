@@ -43,3 +43,13 @@
 /Users/patryk/RiderProjects/MusicReviewApp/MusicReviewAPI/obj/Debug/net7.0/MusicReviewAPI.pdb
 /Users/patryk/RiderProjects/MusicReviewApp/MusicReviewAPI/obj/Debug/net7.0/MusicReviewAPI.genruntimeconfig.cache
 /Users/patryk/RiderProjects/MusicReviewApp/MusicReviewAPI/obj/Debug/net7.0/ref/MusicReviewAPI.dll
+/Users/patryk/RiderProjects/MusicReviewApp/MusicReviewAPI/bin/Debug/net7.0/MediatR.dll
+/Users/patryk/RiderProjects/MusicReviewApp/MusicReviewAPI/bin/Debug/net7.0/MediatR.Contracts.dll
+/Users/patryk/RiderProjects/MusicReviewApp/MusicReviewAPI/bin/Debug/net7.0/MediatR.Extensions.Microsoft.DependencyInjection.dll
+/Users/patryk/RiderProjects/MusicReviewApp/MusicReviewAPI/bin/Debug/net7.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll
+/Users/patryk/RiderProjects/MusicReviewApp/MusicReviewAPI/bin/Debug/net7.0/Microsoft.AspNetCore.Cryptography.Internal.dll
+/Users/patryk/RiderProjects/MusicReviewApp/MusicReviewAPI/bin/Debug/net7.0/Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+/Users/patryk/RiderProjects/MusicReviewApp/MusicReviewAPI/bin/Debug/net7.0/Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+/Users/patryk/RiderProjects/MusicReviewApp/MusicReviewAPI/bin/Debug/net7.0/Microsoft.Extensions.Identity.Core.dll
+/Users/patryk/RiderProjects/MusicReviewApp/MusicReviewAPI/bin/Debug/net7.0/Microsoft.Extensions.Identity.Stores.dll
+/Users/patryk/RiderProjects/MusicReviewApp/MusicReviewAPI/bin/Debug/net7.0/Microsoft.Extensions.Options.dll

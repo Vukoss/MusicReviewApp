@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using MusicReviewAPI.Data;
 using MusicReviewAPI.Models;
+using MusicReviewAPI.Models.DTOs;
 using MusicReviewAPI.Repository.IRepository;
 
 namespace MusicReviewAPI.Repository;
@@ -16,7 +17,7 @@ public class AlbumRepository : IAlbumRepository
     
     public async Task<Album> GetAlbum(int albumId)
     {
-        var output = await _db.Albums.FirstOrDefaultAsync(a => a.Id == albumId);
+        var output = await _db.Albums.Include(a => a.Reviews).FirstOrDefaultAsync(a => a.Id == albumId);
         return output;
     }
 
@@ -38,6 +39,16 @@ public class AlbumRepository : IAlbumRepository
         return await _db.Albums.AnyAsync(a => a.Id == albumId);
     }
 
+    public async Task DeleteAlbum(Album album)
+    {
+        _db.Albums.Remove(album);
+        await SaveAsync();
+    }
+    public async Task UpdateAlbum(Album album)
+    {
+        _db.Albums.Update(album);
+        await SaveAsync();
+    }
     public async Task SaveAsync()
     {
         await _db.SaveChangesAsync();

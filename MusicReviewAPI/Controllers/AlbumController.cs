@@ -27,7 +27,7 @@ public class AlbumController : Controller
     {
         var albums = await _albumRepository.GetAllAlbums();
         
-        if (albums.Count() == 0)
+        if (!albums.Any())
         {
             return StatusCode(404, "Cannot find album");
         }
@@ -59,6 +59,34 @@ public class AlbumController : Controller
         return Ok(albumDto);
     }
 
+    [HttpGet("GetAlbumNameWithRatings")]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(200)]
+    public async Task<IActionResult> GetAlbumWithReviews(int albumId)
+    {
+        if (!await _albumRepository.AlbumExists(albumId))
+            return NotFound();
+        
+        var album = await _albumRepository.GetAlbum(albumId);
+        
+        var ratings = new List<int>();
+        
+        if (album.Reviews != null)
+        {
+            ratings.AddRange(album.Reviews.Select(a => a.Rating));
+        }
+        
+        var albumWithRatings = new AlbumReviewsDTO()
+        {
+            AlbumName = album.Name,
+            Ratings = ratings
+        };
+        
+       return Ok(albumWithRatings);
+    }
+        
+        
+        
     [HttpPost("CreateAlbum")]
     [ProducesResponseType(204)]
     [ProducesResponseType(400)]
@@ -85,5 +113,53 @@ public class AlbumController : Controller
         await _albumRepository.CreateAlbum(newAlbum, bandId);
 
         return Ok("Successfully created");
+    }
+
+    [HttpPut("update/{albumId}")]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(404)]
+    public async Task<IActionResult> UpdateAlbum(int albumId, [FromBody] AlbumDTO updateAlbum)
+    {
+        if (updateAlbum == null)
+        {
+            return BadRequest(ModelState);
+        }
+
+        if (albumId != updateAlbum.Id)
+            return BadRequest(ModelState);
+
+        if (!await _albumRepository.AlbumExists(albumId))
+        {
+            return NotFound();
+        }
+
+        if (!ModelState.IsValid)
+            return BadRequest();
+
+        var albumMap = _mapper.Map<Album>(updateAlbum);
+
+        await _albumRepository.UpdateAlbum(albumMap);
+        
+        return NoContent();
+    }
+
+    [HttpDelete("remove/{albumId}")]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(404)]
+    public async Task<IActionResult> DeleteAlbum(int albumId)
+    {
+        if (!await _albumRepository.AlbumExists(albumId))
+            return NotFound();
+
+        var albumToDelete = await _albumRepository.GetAlbum(albumId);
+
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        await _albumRepository.DeleteAlbum(albumToDelete);
+
+        return NoContent();
     }
 }

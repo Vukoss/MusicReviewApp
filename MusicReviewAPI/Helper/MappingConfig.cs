@@ -12,6 +12,6 @@ public class MappingConfig : Profile
         CreateMap<Band, BandDTO>().ReverseMap();
         CreateMap<Genre, GenreDTO>().ReverseMap();
         CreateMap<Album, AlbumDTO>().ReverseMap();
-
+        CreateMap<Review, ReviewDTO>().ReverseMap();
     }
 }

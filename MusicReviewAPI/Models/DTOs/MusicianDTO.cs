@@ -1,6 +1,6 @@
 namespace MusicReviewAPI.Models.DTOs;
 
-public class MusicianDTO
+public record MusicianDTO
 {
     public int Id { get; set; }
     public string FirstName { get; set; }

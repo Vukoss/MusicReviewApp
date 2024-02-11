@@ -1,9 +1,10 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using MusicReviewAPI.Models;
 
 namespace MusicReviewAPI.Data;
 
-public class DataAccessContext : DbContext
+public class DataAccessContext : IdentityDbContext<User>
 {
     public DataAccessContext(DbContextOptions<DataAccessContext> options) : base(options)
     {
@@ -15,9 +16,12 @@ public class DataAccessContext : DbContext
     public DbSet<Genre> Genres { get; set; }
     public DbSet<Band> Bands { get; set; }
     public DbSet<MusicianBand> MusicianBand { get; set; }
+    public DbSet<Review> Reviews { get; set; }
+    public DbSet<User> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
         modelBuilder.Entity<MusicianBand>()
             .HasKey(mb => new { mb.BandId, mb.MusicianId});
         modelBuilder.Entity<MusicianBand>()

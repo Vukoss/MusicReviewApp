@@ -1,4 +1,6 @@
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
+using MusicReviewAPI;
 using MusicReviewAPI.Data;
 using MusicReviewAPI.Helper;
 using MusicReviewAPI.Repository;
@@ -9,10 +11,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddControllersWithViews()
+    .AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddTransient<IAlbumRepository, AlbumRepository>();
 builder.Services.AddDbContext<DataAccessContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
+builder.Services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(StartUp).Assembly));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
