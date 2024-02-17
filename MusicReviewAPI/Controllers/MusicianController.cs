@@ -1,6 +1,6 @@
-using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using MusicReviewAPI.Application.Musicians.Commands;
 using MusicReviewAPI.Application.Musicians.Queries;
 using MusicReviewAPI.Models.DTOs;
 
@@ -51,4 +51,33 @@ public class MusicianController : Controller
         var result = await _mediator.Send(new GetAllMusicianBandsQuery(musicianId));
         return Ok(result);
     }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateMusician([FromBody] MusicianDTO musicianDto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        if (musicianDto == null)
+            return BadRequest();
+
+        await _mediator.Send(new CreateMusicianCommand(musicianDto));
+        return Ok();
+    }
+
+    //[HttpDelete]
+    //[Route("{id:int}")]
+    //public async Task<IActionResult> DeleteMusician([FromBody] int musicianId)
+    //{
+    //    if (!ModelState.IsValid)
+    //        return BadRequest(ModelState);
+    //}
+
+    //[HttpPut]
+    //[Route("{id:int}")]
+    //public async Task<IActionResult> UpdateMusician([FromBody] int musicianId)
+    //{
+    //    if (!ModelState.IsValid)
+    //        return BadRequest(ModelState);
+    //}
 }

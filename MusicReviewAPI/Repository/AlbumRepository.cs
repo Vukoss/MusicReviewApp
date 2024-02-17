@@ -28,8 +28,8 @@ public class AlbumRepository : IAlbumRepository
 
     public async Task CreateAlbum(Album album, int bandId)
     { 
-        var band = await _db.Bands.FirstOrDefaultAsync(b => b.Id == bandId);
-        album.Band = band;
+       var band = await _db.Bands.FirstOrDefaultAsync(b => b.Id == bandId);
+       album.Band = band;
        await _db.Albums.AddAsync(album);
        await SaveAsync();
     }
@@ -44,11 +44,13 @@ public class AlbumRepository : IAlbumRepository
         _db.Albums.Remove(album);
         await SaveAsync();
     }
+
     public async Task UpdateAlbum(Album album)
     {
         _db.Albums.Update(album);
         await SaveAsync();
     }
+
     public async Task SaveAsync()
     {
         await _db.SaveChangesAsync();

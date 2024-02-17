@@ -1,6 +1,5 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MusicReviewAPI.Models;
 using MusicReviewAPI.Models.DTOs;
 using MusicReviewAPI.Repository.IRepository;
