@@ -7,6 +7,6 @@ public class Musician
     public string? LastName { get; set; }
     public string? Nickname { get; set; }
     public ICollection<Review>? Reviews { get; set; }
-    public ICollection<Genre>? Genres { get; set; }
+    public ICollection<MusicianGenre>? MusicianGenres { get; set; }
     public ICollection<MusicianBand>? MusicianBands { get; set; }
 }

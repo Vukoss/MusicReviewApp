@@ -9,7 +9,7 @@ public class Album
     public double? Duration { get; set; }
     public Band Band { get; set; }
     public int BandId { get; set; }
-    public ICollection<Track> Tracks { get; set; }
+    public ICollection<Track>? Tracks { get; set; }
     public ICollection<Review>? Reviews { get; set; }
-    public ICollection<Genre>? Genres { get; set; }
+    public ICollection<AlbumGenre>? AlbumGenres { get; set; }
 }

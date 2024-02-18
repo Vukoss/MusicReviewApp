@@ -6,8 +6,8 @@ public class Genre
 {
     public int Id { get; set; }
     public string GenreName { get; set; }
-    public ICollection<Album>? Albums { get; set; }
-    public ICollection<Band>? Bands { get; set; }
-    public ICollection<Musician>? Musicians { get; set; }
+    public ICollection<AlbumGenre>? AlbumGenres { get; set; }
+    public ICollection<BandGenre>? BandGenres { get; set; }
+    public ICollection<MusicianGenre>? MusicianGenres { get; set; }
     public ICollection<Track>? Tracks { get; set; }
 }
