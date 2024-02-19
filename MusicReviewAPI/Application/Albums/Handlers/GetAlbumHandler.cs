@@ -1,21 +1,27 @@
+using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using MusicReviewAPI.Application.Albums.Queries;
-using MusicReviewAPI.Models;
-using MusicReviewAPI.Repository.IRepository;
+using MusicReviewAPI.Data;
+using MusicReviewAPI.Models.DTOs;
 
 namespace MusicReviewAPI.Application.Albums.Handlers;
 
-public class GetAlbumHandler : IRequestHandler<GetAlbumQuery, Album>
+public class GetAlbumHandler : IRequestHandler<GetAlbumQuery, AlbumDTO>
 {
-    private readonly IAlbumRepository _albumRepository;
+    private readonly DataAccessContext _db;
+    private readonly IMapper _mapper;
 
-    public GetAlbumHandler(IAlbumRepository albumRepository)
+    public GetAlbumHandler(DataAccessContext db, IMapper mapper)
     {
-        _albumRepository = albumRepository;
+        _db = db;
+        _mapper = mapper;
     }
-    
-    public async Task<Album> Handle(GetAlbumQuery request, CancellationToken cancellationToken)
+
+    public async Task<AlbumDTO> Handle(GetAlbumQuery request, CancellationToken cancellationToken)
     {
-        return await _albumRepository.GetAlbum(request.AlbumId);
+        var result = await _db.Albums.FirstOrDefaultAsync(a => a.Id == request.AlbumId);
+        var resultDTO = _mapper.Map<AlbumDTO>(result);
+        return resultDTO;
     }
 }

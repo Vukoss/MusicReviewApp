@@ -3,8 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using MusicReviewAPI;
 using MusicReviewAPI.Data;
 using MusicReviewAPI.Helper;
-using MusicReviewAPI.Repository;
-using MusicReviewAPI.Repository.IRepository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +12,6 @@ builder.Services.AddControllers();
 builder.Services.AddControllersWithViews()
     .AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 builder.Services.AddAutoMapper(typeof(MappingConfig));
-builder.Services.AddTransient<IAlbumRepository, AlbumRepository>();
 builder.Services.AddDbContext<DataAccessContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
 builder.Services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(StartUp).Assembly));

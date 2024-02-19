@@ -1,6 +1,6 @@
 using MediatR;
-using MusicReviewAPI.Models;
+using MusicReviewAPI.Models.DTOs;
 
 namespace MusicReviewAPI.Application.Albums.Queries;
 
-public record GetAlbumQuery(int AlbumId) : IRequest<Album>;
+public record GetAlbumQuery(int AlbumId) : IRequest<AlbumDTO>;

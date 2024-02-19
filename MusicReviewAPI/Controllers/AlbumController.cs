@@ -1,8 +1,10 @@
 using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using MusicReviewAPI.Application.Albums.Commands;
+using MusicReviewAPI.Application.Albums.Queries;
 using MusicReviewAPI.Models;
 using MusicReviewAPI.Models.DTOs;
-using MusicReviewAPI.Repository.IRepository;
 
 namespace MusicReviewAPI.Controllers;
 
@@ -10,33 +12,20 @@ namespace MusicReviewAPI.Controllers;
 [Route("api/[controller]")]
 public class AlbumController : Controller
 {
-    private readonly IAlbumRepository _albumRepository;
-    private readonly IMapper _mapper;
+    private readonly IMediator _mediator;
 
-    public AlbumController(IAlbumRepository albumRepository, IMapper mapper)
+    public AlbumController(IMediator mediator)
     {
-        _albumRepository = albumRepository;
-        _mapper = mapper;
+        _mediator = mediator;
     }
 
     [HttpGet("GetAllAlbums")]
     [ProducesResponseType(200, Type = typeof(IEnumerable<Album>))]
     [ProducesResponseType(404)]
-    public async Task<IActionResult> GetAlbums()
+    public async Task<IActionResult> GetAlbums([FromQuery] int pageSize, [FromQuery] bool sortReversed, [FromQuery] int pageNumber)
     {
-        var albums = await _albumRepository.GetAllAlbums();
-        
-        if (!albums.Any())
-        {
-            return StatusCode(404, "Cannot find album");
-        }
-
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-        
-        var albumDto = _mapper.Map<List<AlbumDTO>>(albums);
-        
-        return Ok(albumDto);
+        var result = await _mediator.Send(new GetAllAlbumsQuery(pageSize, pageNumber, sortReversed));
+        return Ok(result);
     }
     
     [HttpGet("{albumId}")]
@@ -44,47 +33,18 @@ public class AlbumController : Controller
     [ProducesResponseType(400)]
     public async Task<IActionResult> GetAlbum(int albumId)
     {
-        if (!await _albumRepository.AlbumExists(albumId))
-        {
-            return NotFound();
-        }
-
-        var album = await _albumRepository.GetAlbum(albumId);
-        var albumDto = _mapper.Map<AlbumDTO>(album);
-
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-        
-        return Ok(albumDto);
+        var result = await _mediator.Send(new GetAlbumQuery(albumId));
+        return Ok(result);
     }
 
     [HttpGet("GetAlbumNameWithRatings")]
     [ProducesResponseType(404)]
     [ProducesResponseType(200)]
-    public async Task<IActionResult> GetAlbumWithReviews(int albumId)
+    public async Task<IActionResult> GetAlbumNameWithRatings(int albumId)
     {
-        if (!await _albumRepository.AlbumExists(albumId))
-            return NotFound();
-        
-        var album = await _albumRepository.GetAlbum(albumId);
-        
-        var ratings = new List<int>();
-        
-        if (album.Reviews != null)
-        {
-            ratings.AddRange(album.Reviews.Select(a => a.Rating));
-        }
-        
-        var albumWithRatings = new AlbumReviewsDTO()
-        {
-            AlbumName = album.Name,
-            Ratings = ratings
-        };
-        
-       return Ok(albumWithRatings);
+       var result = await _mediator.Send(new GetAlbumNameWithRatingsQuery(albumId));
+       return Ok(result);
     }
-        
-        
         
     [HttpPost("CreateAlbum")]
     [ProducesResponseType(204)]
@@ -94,7 +54,7 @@ public class AlbumController : Controller
         if (albumCreate == null)
             return BadRequest(ModelState);
 
-        var allAlbums = await _albumRepository.GetAllAlbums();
+        var allAlbums = await _mediator.Send(new GetAllAlbumsQuery());
         
         var album = allAlbums.FirstOrDefault(a => a.Name.Trim().ToUpper() == albumCreate.Name.ToUpper());
         
@@ -107,9 +67,7 @@ public class AlbumController : Controller
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var newAlbum = _mapper.Map<Album>(albumCreate);
-        
-        await _albumRepository.CreateAlbum(newAlbum, bandId);
+        await _mediator.Send(new CreateAlbumCommand(albumCreate, bandId));
 
         return Ok("Successfully created");
     }
@@ -121,24 +79,19 @@ public class AlbumController : Controller
     public async Task<IActionResult> UpdateAlbum(int albumId, [FromBody] AlbumDTO updateAlbum)
     {
         if (updateAlbum == null)
-        {
             return BadRequest(ModelState);
-        }
+
 
         if (albumId != updateAlbum.Id)
             return BadRequest(ModelState);
 
-        if (!await _albumRepository.AlbumExists(albumId))
-        {
+        if (await _mediator.Send(new AlbumExistsQuery(albumId)) == false)
             return NotFound();
-        }
-
+        
         if (!ModelState.IsValid)
             return BadRequest();
 
-        var albumMap = _mapper.Map<Album>(updateAlbum);
-
-        await _albumRepository.UpdateAlbum(albumMap);
+        await _mediator.Send(new UpdateAlbumCommand(albumId, updateAlbum));
         
         return NoContent();
     }
@@ -149,15 +102,12 @@ public class AlbumController : Controller
     [ProducesResponseType(404)]
     public async Task<IActionResult> DeleteAlbum(int albumId)
     {
-        if (!await _albumRepository.AlbumExists(albumId))
+        var albumExists = await _mediator.Send(new AlbumExistsQuery(albumId));
+
+        if (albumExists == false)
             return NotFound();
 
-        var albumToDelete = await _albumRepository.GetAlbum(albumId);
-
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
-        await _albumRepository.DeleteAlbum(albumToDelete);
+        await _mediator.Send(new RemoveAlbumCommand(albumId));
 
         return NoContent();
     }

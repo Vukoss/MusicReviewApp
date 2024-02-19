@@ -1,7 +1,7 @@
 namespace MusicReviewAPI.Models.DTOs;
 
-public class AlbumReviewsDTO
+public class AlbumWithRatingsDTO
 {
     public string AlbumName { get; set; }
-    public ICollection<int> Ratings { get; set; }
+    public ICollection<int>? Ratings { get; set; }
 }
